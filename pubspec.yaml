@@ -2,3 +2,5 @@ name: ddo
 version: 0.1.0
 author: Nathan Kerr <nathankerr@gmail.com>
 description: A port of PHP Data Object to Dart.
+dependencies:
+  sqljocky: any

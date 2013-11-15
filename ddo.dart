@@ -1,8 +1,10 @@
 /*
  * A port of the PDO library to Dart
  */
-
 library ddo;
+
+import 'package:sqljocky/sqljocky.dart'; //Used for ddo_Mysql
+
 part 'drivers/driver.dart';
 part 'drivers/ddo_mysql.dart';
 part 'statements/ddo_statement.dart';
