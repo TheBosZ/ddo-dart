@@ -76,4 +76,60 @@ class DDO {
 		}
 		return result;
 	}
+
+	bool beginTransaction() {
+		return _driver.beginTransaction();
+	}
+
+	bool commit() {
+		return _driver.commit();
+	}
+
+	bool rollBack() {
+		return _driver.rollBack();
+	}
+
+	bool close() {
+		return _driver.close();
+	}
+
+	String errorCode() {
+		return _driver.errorCode();
+	}
+
+	List errorInfo() {
+		return _driver.errorInfo();
+	}
+
+	int lastInsertId() {
+		return _driver.lastInsertId();
+	}
+
+	DDOStatement prepare(String query, [List array = null]) {
+		return _driver.prepare(query, array);
+	}
+
+	DDOStatement query(String query) {
+		return _driver.query(query);
+	}
+
+	String quote(String val) {
+		return _driver.quote(val);
+	}
+
+	bool setAttribute(int attr, dynamic mixed) {
+		return _driver.setAttribute(attr, mixed);
+	}
+
+	dynamic getAttribute(int attr) {
+		return _driver.getAttribute(attr);
+	}
+
+	/*
+	 * Not implemented:
+	 * __call
+	 * __set
+	 * __get
+	 */
+
 }
