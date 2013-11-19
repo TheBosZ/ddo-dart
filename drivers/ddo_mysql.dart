@@ -2,28 +2,43 @@ part of ddo;
 
 class DDOMySQL extends Driver {
 
-	void DDOMySQL(String host, String dbname, String username, String password){
+	ConnectionPool _connection;
+	List<String> _dbinfo;
+	String _errorCode;
+	List<String> _errorInfo;
 
+	DDOMySQL(String host, String dbname, String username, String password){
+		List<String> h = host.split(':');
+		_connection = new ConnectionPool(
+			host: h[0],
+			port: int.parse(h[1]),
+			user: username,
+			password: password,
+			db: dbname,
+			max: 5
+		);
+		_dbinfo = [host, username, password, dbname];
 	}
 
 	bool beginTransaction() {
-	  // TODO implement this method
+		return exec("BEGIN") == 0;
 	}
 
 	bool close() {
-	  // TODO implement this method
+		_connection.close();
+		return true;
 	}
 
 	bool commit() {
-	  // TODO implement this method
+	  return exec("COMMIT") == 0;
 	}
 
 	String errorCode() {
-	  // TODO implement this method
+		return _errorCode;
 	}
 
 	List<String> errorInfo() {
-	  // TODO implement this method
+		return _errorInfo;
 	}
 
 	int exec(String query) {
@@ -43,7 +58,11 @@ class DDOMySQL extends Driver {
 	}
 
 	DDOStatement query(String query) {
-	  // TODO implement this method
+		DDOStatementMySQL statement = new DDOStatementMySQL(
+			query, _connection, _dbinfo, _containerDdo
+		);
+		statement.query();
+		return statement;
 	}
 
 	String quote(String value) {
@@ -56,5 +75,9 @@ class DDOMySQL extends Driver {
 
 	bool setAttribute(int attr, mixed) {
 	  // TODO implement this method
+	}
+
+	dynamic _uQuery(String query) {
+		return _connection.query(query);
 	}
 }

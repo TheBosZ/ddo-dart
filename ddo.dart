@@ -3,11 +3,12 @@
  */
 library ddo;
 
+import 'statements/ddo_statement.dart';
 import 'package:sqljocky/sqljocky.dart'; //Used for ddo_Mysql
 
 part 'drivers/driver.dart';
 part 'drivers/ddo_mysql.dart';
-part 'statements/ddo_statement.dart';
+
 
 class DDO {
 	static const FETCH_ASSOC = 2;
@@ -36,7 +37,7 @@ class DDO {
 
 	Driver _driver;
 
-	void DDO(String dsn, [String username = '', String password = '', List<String> driver_options = null] ){
+	DDO(String dsn, [String username = '', String password = '', List<String> driver_options = null] ){
 		Map<String, String> con = _getDsn(dsn);
 		switch(con['type']){
 			case 'mysql':
