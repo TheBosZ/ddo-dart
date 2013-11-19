@@ -20,8 +20,8 @@ class DDOMySQL extends Driver {
 		_dbinfo = [host, username, password, dbname];
 	}
 
-	bool beginTransaction() {
-		return exec("BEGIN") == 0;
+	Future beginTransaction() {
+		return exec("BEGIN");
 	}
 
 	bool close() {
@@ -29,8 +29,8 @@ class DDOMySQL extends Driver {
 		return true;
 	}
 
-	bool commit() {
-	  return exec("COMMIT") == 0;
+	Future commit() {
+	  return exec("COMMIT");
 	}
 
 	String errorCode() {
@@ -41,8 +41,10 @@ class DDOMySQL extends Driver {
 		return _errorInfo;
 	}
 
-	int exec(String query) {
-	  // TODO implement this method
+	Future exec(String query) {
+		return _uQuery(query).then((Results results){
+			return results.affectedRows;
+		});
 	}
 
 	getAttribute(int attr) {
@@ -69,7 +71,7 @@ class DDOMySQL extends Driver {
 	  // TODO implement this method
 	}
 
-	bool rollBack() {
+	Future rollBack() {
 	  // TODO implement this method
 	}
 
@@ -77,7 +79,7 @@ class DDOMySQL extends Driver {
 	  // TODO implement this method
 	}
 
-	dynamic _uQuery(String query) {
+	Future<Results> _uQuery(String query) {
 		return _connection.query(query);
 	}
 }

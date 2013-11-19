@@ -7,15 +7,15 @@ abstract class Driver {
 		this._containerDdo = ddo;
 	}
 
-	bool beginTransaction();
+	Future beginTransaction();
 
 	bool close();
 
-	bool rollBack();
+	Future rollBack();
 
-	bool commit();
+	Future commit();
 
-	int exec(String query);
+	Future exec(String query);
 
 	String errorCode();
 

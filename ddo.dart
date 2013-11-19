@@ -5,6 +5,7 @@ library ddo;
 
 import 'statements/ddo_statement.dart';
 import 'package:sqljocky/sqljocky.dart'; //Used for ddo_Mysql
+import 'dart:async';
 
 part 'drivers/driver.dart';
 part 'drivers/ddo_mysql.dart';
@@ -80,15 +81,15 @@ class DDO {
 		return result;
 	}
 
-	bool beginTransaction() {
+	Future beginTransaction() {
 		return _driver.beginTransaction();
 	}
 
-	bool commit() {
+	Future commit() {
 		return _driver.commit();
 	}
 
-	bool rollBack() {
+	Future rollBack() {
 		return _driver.rollBack();
 	}
 
