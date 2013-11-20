@@ -12,29 +12,29 @@ part 'drivers/ddo_mysql.dart';
 
 
 class DDO {
-	static const FETCH_ASSOC = 2;
-	static const FETCH_NUM = 3;
-	static const FETCH_BOTH = 4;
-	static const FETCH_OBJ = 5;
-	static const FETCH_COLUMN = 7;
-	static const FETCH_LAZY = 1;
-	static const FETCH_BOUND = 6;
-	static const FETCH_CLASS = 8;
+	static const int FETCH_ASSOC = 2;
+	static const int FETCH_NUM = 3;
+	static const int FETCH_BOTH = 4;
+	static const int FETCH_OBJ = 5;
+	static const int FETCH_COLUMN = 7;
+	static const int FETCH_LAZY = 1;
+	static const int FETCH_BOUND = 6;
+	static const int FETCH_CLASS = 8;
 
-	static const ATTR_ERRMODE = 3;
-	static const ATTR_SERVER_VERSION = 4;
-	static const ATTR_CLIENT_VERSION = 5;
-	static const ATTR_SERVER_INFO = 6;
-	static const ATTR_PERSISTENT = 12;
-	static const ATTR_STATEMENT_CLASS = 13;
+	static const int ATTR_ERRMODE = 3;
+	static const int ATTR_SERVER_VERSION = 4;
+	static const int ATTR_CLIENT_VERSION = 5;
+	static const int ATTR_SERVER_INFO = 6;
+	static const int ATTR_PERSISTENT = 12;
+	static const int ATTR_STATEMENT_CLASS = 13;
 
-	static const ERRMODE_EXCEPTION = 2;
+	static const int ERRMODE_EXCEPTION = 2;
 
-	static const PARAM_BOOL = 5;
-	static const PARAM_NULL = 0;
-	static const PARAM_INT = 1;
-	static const PARAM_STR = 2;
-	static const PARAM_LOB = 3;
+	static const int PARAM_BOOL = 5;
+	static const int PARAM_NULL = 0;
+	static const int PARAM_INT = 1;
+	static const int PARAM_STR = 2;
+	static const int PARAM_LOB = 3;
 
 	Driver _driver;
 

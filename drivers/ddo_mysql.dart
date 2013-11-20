@@ -6,6 +6,7 @@ class DDOMySQL extends Driver {
 	List<String> _dbinfo;
 	String _errorCode;
 	List<String> _errorInfo;
+	int _lastInsertId;
 
 	DDOMySQL(String host, String dbname, String username, String password){
 		List<String> h = host.split(':');
@@ -43,20 +44,19 @@ class DDOMySQL extends Driver {
 
 	Future exec(String query) {
 		return _uQuery(query).then((Results results){
+			if(results.insertId != null) {
+				_lastInsertId = results.insertId;
+			}
 			return results.affectedRows;
 		});
 	}
 
-	getAttribute(int attr) {
-	  // TODO implement this method
-	}
-
 	int lastInsertId() {
-	  // TODO implement this method
+		return _lastInsertId;
 	}
 
 	DDOStatement prepare(String query, [List array = null]) {
-	  // TODO implement this method
+		return new DDOStatementMySQL(query, _connection, _dbinfo, _containerDdo);
 	}
 
 	DDOStatement query(String query) {
@@ -67,16 +67,22 @@ class DDOMySQL extends Driver {
 		return statement;
 	}
 
+	// Per http://dev.mysql.com/doc/refman/5.0/en/mysql-real-escape-string.html,
+	// only backslash and single quote need to be escaped
 	String quote(String value) {
-	  // TODO implement this method
+		return "'${value.replaceAll(r'\', r'\\').replaceAll("'", r"\'")}'";
 	}
 
 	Future rollBack() {
-	  // TODO implement this method
+		return exec("ROLLBACK");
 	}
 
 	bool setAttribute(int attr, mixed) {
-	  // TODO implement this method
+		// TODO implement this method
+	}
+
+	dynamic getAttribute(int attr) {
+  		// TODO implement this method
 	}
 
 	Future<Results> _uQuery(String query) {
