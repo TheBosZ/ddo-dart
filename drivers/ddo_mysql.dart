@@ -16,25 +16,11 @@ class DDOMySQL extends Driver {
 		_dbinfo = [host, username, password, dbname];
 	}
 
-	Future beginTransaction() {
-		return exec("BEGIN");
-	}
+	Future beginTransaction() => exec("BEGIN");
 
-	bool close() {
-		return _connection.close();
-	}
+	bool close() => _connection.close();
 
-	Future commit() {
-	  return exec("COMMIT");
-	}
-
-	String errorCode() {
-		return _errorCode;
-	}
-
-	List<String> errorInfo() {
-		return _errorInfo;
-	}
+	Future commit() => exec("COMMIT");
 
 	Future<DDOResults> exec(String query) {
 		Completer completer = new Completer();
@@ -50,16 +36,10 @@ class DDOMySQL extends Driver {
 		return completer.future;
 	}
 
-	int lastInsertId() {
-		return _lastInsertId;
-	}
-
-	DDOStatement prepare(String query, [List array = null]) {
-		return new DDOStatementMySQL(query, _connection, _dbinfo, _containerDdo);
-	}
+	DDOStatement prepare(String query, [List array = null]) => new DDOStatement(query, _connection, _dbinfo, _containerDdo);
 
 	DDOStatement query(String query) {
-		DDOStatementMySQL statement = new DDOStatementMySQL(
+		DDOStatement statement = new DDOStatement(
 			query, _connection, _dbinfo, _containerDdo
 		);
 		statement.query();
@@ -68,13 +48,9 @@ class DDOMySQL extends Driver {
 
 	// Per http://dev.mysql.com/doc/refman/5.0/en/mysql-real-escape-string.html,
 	// only backslash and single quote need to be escaped
-	String quote(String value) {
-		return "'${value.replaceAll(r'\', r'\\').replaceAll("'", r"\'")}'";
-	}
+	String quote(String value) => "'${value.replaceAll(r'\', r'\\').replaceAll("'", r"\'")}'";
 
-	Future rollBack() {
-		return exec("ROLLBACK");
-	}
+	Future rollBack() => exec("ROLLBACK");
 
 	bool setAttribute(int attr, mixed) {
 		// TODO implement this method
@@ -84,7 +60,6 @@ class DDOMySQL extends Driver {
   		// TODO implement this method
 	}
 
-	Future<DDOResults> _uQuery(String query) {
-		return _connection.query(query);
-	}
+	Future<DDOResults> _uQuery(String query) => _connection.query(query);
+
 }

@@ -64,7 +64,7 @@ class DDO {
 			default:
 				throw new Exception('Unknown database type "${con['type']}"');
 		}
-		_driver.setContainerDdo(this);
+		_driver.containerDdo = this;
 	}
 
 	Map<String, String> _getDsn(String dsn){
@@ -83,53 +83,29 @@ class DDO {
 		return result;
 	}
 
-	Future beginTransaction() {
-		return _driver.beginTransaction();
-	}
+	Future beginTransaction() => _driver.beginTransaction();
 
-	Future commit() {
-		return _driver.commit();
-	}
+	Future commit() => _driver.commit();
 
-	Future rollBack() {
-		return _driver.rollBack();
-	}
+	Future rollBack() => _driver.rollBack();
 
-	bool close() {
-		return _driver.close();
-	}
+	bool close() => _driver.close();
 
-	String errorCode() {
-		return _driver.errorCode();
-	}
+	String get errorCode => _driver.errorCode;
 
-	List errorInfo() {
-		return _driver.errorInfo();
-	}
+	List<String> get errorInfo => _driver.errorInfo;
 
-	int lastInsertId() {
-		return _driver.lastInsertId();
-	}
+	int get lastInsertId => _driver.lastInsertId;
 
-	DDOStatement prepare(String query, [List array = null]) {
-		return _driver.prepare(query, array);
-	}
+	DDOStatement prepare(String query, [List array = null]) => _driver.prepare(query, array);
 
-	DDOStatement query(String query) {
-		return _driver.query(query);
-	}
+	DDOStatement query(String query) => _driver.query(query);
 
-	String quote(String val) {
-		return _driver.quote(val);
-	}
+	String quote(String val) => _driver.quote(val);
 
-	bool setAttribute(int attr, dynamic mixed) {
-		return _driver.setAttribute(attr, mixed);
-	}
+	bool setAttribute(int attr, dynamic mixed) => _driver.setAttribute(attr, mixed);
 
-	dynamic getAttribute(int attr) {
-		return _driver.getAttribute(attr);
-	}
+	dynamic getAttribute(int attr) => _driver.getAttribute(attr);
 
 	/*
 	 * Not implemented:

@@ -12,13 +12,9 @@ abstract class DDOConnection {
 		return _affectedRows;
 	}
 
-	int getErrorNo() {
-		return _errorNo;
-	}
+	int get errorNo => _errorNo;
 
-	String getError() {
-		return _error;
-	}
+	String get error => _error;
 
 	Future<DDOResults> query(String query);
 
@@ -32,10 +28,7 @@ class DDOResults {
 
 	List<DDOResult> get results => _results;
 
-	void add(DDOResult result) {
-		_results.add(result);
-	}
-
+	void add(DDOResult result) => _results.add(result);
 }
 
 class DDOResult {

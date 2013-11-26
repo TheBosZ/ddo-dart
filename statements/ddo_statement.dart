@@ -4,39 +4,40 @@ import '../ddo.dart';
 import '../connection/ddo_connection.dart';
 import 'dart:async';
 
-part 'ddo_statement_mysql.dart';
-
-abstract class DDOStatement {
+class DDOStatement {
 
 	String _query;
 	DDOConnection _connection;
 	List<String> _dbInfo;
 	DDO _containerDdo;
-	int _position;
+	int _position = 0;
 	dynamic _result;
 	int _numRows;
 	Map<String, dynamic> _namedParams;
 	List<dynamic> _boundParams;
 
-	DDOStatement(String query, dynamic connection, List<String> dbInfo, DDO container) {
-		_query = query;
-		_connection = connection;
-		_dbInfo = dbInfo;
-		_containerDdo = container;
-		_position = 0;
+	DDOStatement(this._query, this._connection, this._dbInfo, this._containerDdo);
+
+	//Methods
+	int columnCount() {
+  		// TODO implement this method
 	}
 
-	dynamic _uQuery(String query);
+	fetch() {
+	  // TODO implement this method
+	}
 
-	dynamic fetch();
+	fetchAll() {
+	  // TODO implement this method
+	}
 
-	dynamic fetchAll();
+	fetchColumn() {
+	  // TODO implement this method
+	}
 
-	dynamic fetchColumn();
-
-	int columnCount();
-
-	int rowCount();
+	int rowCount() {
+	  // TODO implement this method
+	}
 
 	bool query() {
 		_result = _uQuery(_query);
@@ -91,4 +92,5 @@ abstract class DDOStatement {
 
 	}
 
+	Future <DDOResults> _uQuery(String query) => _connection.query(query);
 }

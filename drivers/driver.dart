@@ -8,10 +8,16 @@ abstract class Driver {
 	int _lastInsertId;
 	int _affectedRows;
 
-	void setContainerDdo(DDO ddo) {
-		this._containerDdo = ddo;
-	}
+	//Methods
+	set containerDdo(DDO ddo) => this._containerDdo = ddo;
 
+	String get errorCode => _errorCode;
+
+	List<String> get errorInfo => _errorInfo;
+
+	int get lastInsertId => _lastInsertId;
+
+	//Abstracts
 	Future beginTransaction();
 
 	bool close();
@@ -21,12 +27,6 @@ abstract class Driver {
 	Future commit();
 
 	Future<DDOResults> exec(String query);
-
-	String errorCode();
-
-	List<String> errorInfo();
-
-	int lastInsertId();
 
 	DDOStatement prepare(String query, [List array = null]);
 
