@@ -4,8 +4,10 @@
 library ddo;
 
 import 'statements/ddo_statement.dart';
-import 'package:sqljocky/sqljocky.dart'; //Used for ddo_Mysql
+import 'connection/ddo_connection_mysql.dart';
 import 'dart:async';
+
+export 'connection/ddo_connection_mysql.dart';
 
 part 'drivers/driver.dart';
 part 'drivers/ddo_mysql.dart';

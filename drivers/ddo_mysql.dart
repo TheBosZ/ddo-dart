@@ -2,21 +2,16 @@ part of ddo;
 
 class DDOMySQL extends Driver {
 
-	ConnectionPool _connection;
-	List<String> _dbinfo;
-	String _errorCode;
-	List<String> _errorInfo;
-	int _lastInsertId;
+	DDOConnectionMySQL _connection;
 
 	DDOMySQL(String host, String dbname, String username, String password){
 		List<String> h = host.split(':');
-		_connection = new ConnectionPool(
+		_connection = new DDOConnectionMySQL(
 			host: h[0],
 			port: int.parse(h[1]),
 			user: username,
 			password: password,
-			db: dbname,
-			max: 5
+			db: dbname
 		);
 		_dbinfo = [host, username, password, dbname];
 	}
@@ -26,8 +21,7 @@ class DDOMySQL extends Driver {
 	}
 
 	bool close() {
-		_connection.close();
-		return true;
+		return _connection.close();
 	}
 
 	Future commit() {
@@ -42,13 +36,18 @@ class DDOMySQL extends Driver {
 		return _errorInfo;
 	}
 
-	Future exec(String query) {
-		return _uQuery(query).then((Results results){
+	Future<DDOResults> exec(String query) {
+		Completer completer = new Completer();
+		_uQuery(query).then((DDOResults results){
 			if(results.insertId != null) {
 				_lastInsertId = results.insertId;
 			}
-			return results.affectedRows;
-		});
+			if(results.affectedRows != null) {
+				_affectedRows = results.affectedRows;
+			}
+			completer.complete(results);
+		}, onError: (error) => completer.completeError(error));
+		return completer.future;
 	}
 
 	int lastInsertId() {
@@ -85,7 +84,7 @@ class DDOMySQL extends Driver {
   		// TODO implement this method
 	}
 
-	Future<Results> _uQuery(String query) {
+	Future<DDOResults> _uQuery(String query) {
 		return _connection.query(query);
 	}
 }

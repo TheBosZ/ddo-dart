@@ -2,6 +2,11 @@ part of ddo;
 
 abstract class Driver {
 	DDO _containerDdo = null;
+	List<String> _dbinfo;
+	String _errorCode;
+	List<String> _errorInfo;
+	int _lastInsertId;
+	int _affectedRows;
 
 	void setContainerDdo(DDO ddo) {
 		this._containerDdo = ddo;
@@ -15,7 +20,7 @@ abstract class Driver {
 
 	Future commit();
 
-	Future exec(String query);
+	Future<DDOResults> exec(String query);
 
 	String errorCode();
 

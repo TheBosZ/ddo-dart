@@ -1,13 +1,15 @@
 library ddo_statement;
 
 import '../ddo.dart';
+import '../connection/ddo_connection.dart';
+import 'dart:async';
 
 part 'ddo_statement_mysql.dart';
 
 abstract class DDOStatement {
 
 	String _query;
-	dynamic _connection;
+	DDOConnection _connection;
 	List<String> _dbInfo;
 	DDO _containerDdo;
 	int _position;
@@ -32,7 +34,7 @@ abstract class DDOStatement {
 
 	dynamic fetchColumn();
 
-	dynamic columnCount();
+	int columnCount();
 
 	int rowCount();
 
