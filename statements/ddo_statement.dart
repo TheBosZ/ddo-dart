@@ -4,44 +4,45 @@ import '../ddo.dart';
 import '../connection/ddo_connection.dart';
 import 'dart:async';
 
-class DDOStatement {
+part 'ddo_statement_mysql.dart';
+
+abstract class DDOStatement {
 
 	String _query;
 	DDOConnection _connection;
 	List<String> _dbInfo;
 	DDO _containerDdo;
 	int _position = 0;
-	dynamic _result;
+	DDOResults _result;
 	int _numRows;
-	Map<String, dynamic> _namedParams;
-	List<dynamic> _boundParams;
+	Map<String, Object> _namedParams;
+	List<Object> _boundParams;
+	String _fetchClass;
+	int _fetchMode;
+	String _errorCode;
+	List _errorInfo;
 
 	DDOStatement(this._query, this._connection, this._dbInfo, this._containerDdo);
 
-	//Methods
-	int columnCount() {
-  		// TODO implement this method
-	}
+	//Abstract Methods
+	Future <DDOResults> _uQuery(String query);
 
-	fetch() {
-	  // TODO implement this method
-	}
+	int columnCount();
 
-	fetchAll() {
-	  // TODO implement this method
-	}
+	Object fetch([int mode = DDO.FETCH_BOTH, Object cursor = null, int offset = null]);
 
-	fetchColumn() {
-	  // TODO implement this method
-	}
+	List<Object> fetchAll();
 
-	int rowCount() {
-	  // TODO implement this method
-	}
+	Object fetchColumn();
 
-	bool query() {
-		_result = _uQuery(_query);
-		return _result == null;
+	int rowCount();
+
+	//Implemented methods
+	Future<bool> query() {
+		return _uQuery(_query).then((result) {
+			_result = result;
+			return result != null;
+		});
 	}
 
 	void rewind() {
@@ -52,10 +53,7 @@ class DDOStatement {
 		++_position;
 	}
 
-	dynamic current([int mode = null]){
-		if(mode == null) {
-			mode = DDO.FETCH_BOTH;
-		}
+	Object current([int mode = DDO.FETCH_BOTH]){
 		return fetch();
 	}
 
@@ -70,7 +68,7 @@ class DDOStatement {
 		return _position < _numRows;
 	}
 
-	void bindParam(dynamic mixed, dynamic variable, [int type = null, int length = null]) {
+	void bindParam(Object mixed, String variable, [int type = null, int length = null]) {
 		if(mixed is String) {
 			_namedParams[mixed] = variable;
 		} else {
@@ -79,18 +77,98 @@ class DDOStatement {
 	}
 
 	//What's the difference between this and bindParam?
-	void bindValue(dynamic mixed, dynamic variable, [int type = null, int length = null]) {
+	void bindValue(Object mixed, String variable, [int type = null, int length = null]) {
 		bindParam(mixed, variable, type, length);
 	}
 
-	bool bindColumn(dynamic mixed, dynamic param, [int type = null, int maxLength = null, dynamic driverOption = null]) {
+	bool bindColumn(Object mixed, Object param, [int type = null, int maxLength = null, Object driverOption = null]) {
 		//Not supported.
 		return false;
 	}
 
-	bool execute([List arr = null]) {
-
+	Future<bool> execute([List arr = null]) {
+		if(_boundParams.length > 0) {
+			arr = _boundParams;
+		}
+		String query = _query;
+		if(arr.length > 0) {
+			if(_namedParams.length > 0) {
+				_namedParams.forEach((k, v) {
+					query.replaceAll(k, _containerDdo.quote(v));
+				});
+			} else {
+				//do regular params
+				List params = prepareInput(_boundParams);
+				if(params.length != '?'.allMatches(query).length) {
+					throw new Exception('Number of params doesn\'t match number of ?s');
+				}
+				query = query.replaceAllMapped('?', (Match m) {
+					return params.removeAt(0);
+				});
+			}
+		}
+		_namedParams = new Map();
+		_boundParams = new List();
+		return _uQuery(query).then((result) {
+			_result = result;
+			return result != null;
+		});
 	}
 
-	Future <DDOResults> _uQuery(String query) => _connection.query(query);
+	Object prepareInput(Object value){
+		if(value is List) {
+			return value.map((v) => prepareInput(v));
+		}
+
+		if(value is int){
+			return value;
+		}
+
+		if(value is bool) {
+			return value ? 1 : 0;
+		}
+
+		if(value == null) {
+			return 'NULL';
+		}
+
+		return _containerDdo.quote(value);
+	}
+
+	bool setFetchMode(int mode, [String cla = null]){
+		bool result = false;
+		switch(mode) {
+			case DDO.FETCH_CLASS:
+				_fetchClass = cla;
+				result = true;
+				_fetchMode = mode;
+				break;
+			case DDO.FETCH_NUM:
+			case DDO.FETCH_ASSOC:
+			case DDO.FETCH_ASSOC:
+			case DDO.FETCH_OBJ:
+			case DDO.FETCH_BOTH:
+				result = true;
+				_fetchMode = mode;
+				break;
+		}
+		return result;
+	}
+
+	Object getAttribute(int attr) {
+		return _containerDdo.getAttribute(attr);
+	}
+
+	bool setAttribute(int attr, Object value) {
+		return _containerDdo.setAttribute(attr, value);
+	}
+
+	String errorCode() {
+		return _errorCode;
+	}
+
+	List errorInfo() {
+		return _errorInfo;
+	}
+
 }

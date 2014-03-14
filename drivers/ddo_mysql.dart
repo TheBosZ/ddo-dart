@@ -36,10 +36,10 @@ class DDOMySQL extends Driver {
 		return completer.future;
 	}
 
-	DDOStatement prepare(String query, [List array = null]) => new DDOStatement(query, _connection, _dbinfo, _containerDdo);
+	DDOStatement prepare(String query, [List array = null]) => new DDOStatementMySQL(query, _connection, _dbinfo, _containerDdo);
 
 	DDOStatement query(String query) {
-		DDOStatement statement = new DDOStatement(
+		DDOStatement statement = new DDOStatementMySQL(
 			query, _connection, _dbinfo, _containerDdo
 		);
 		statement.query();
