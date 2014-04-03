@@ -1,7 +1,7 @@
 library ddo_test;
 
 import 'package:unittest/unittest.dart';
-import '../ddo.dart';
+import '../lib/ddo.dart';
 
 main() {
 	String dsn = 'mysql:host=localhost;dbname=wishlist';
