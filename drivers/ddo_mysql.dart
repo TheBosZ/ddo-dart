@@ -1,11 +1,18 @@
-part of ddo;
+part of dart_ddo;
 
 class DDOMySQL extends Driver {
 
+	bool logging = false;
+
 	DDOConnectionMySQL _connection;
+	bool _throwExceptions = false;
+	bool _persistent = false;
 
 	DDOMySQL(String host, String dbname, String username, String password){
 		List<String> h = host.split(':');
+		if(h.length < 2) {
+			h.add('3306');
+		}
 		_connection = new DDOConnectionMySQL(
 			host: h[0],
 			port: int.parse(h[1]),
@@ -36,10 +43,10 @@ class DDOMySQL extends Driver {
 		return completer.future;
 	}
 
-	DDOStatement prepare(String query, [List array = null]) => new DDOStatementMySQL(query, _connection, _dbinfo, _containerDdo);
+	DDOStatement prepare(String query, [List array = null]) => new DDOStatement(query, _connection, _dbinfo, _containerDdo);
 
 	DDOStatement query(String query) {
-		DDOStatement statement = new DDOStatementMySQL(
+		DDOStatement statement = new DDOStatement(
 			query, _connection, _dbinfo, _containerDdo
 		);
 		statement.query();
@@ -52,12 +59,39 @@ class DDOMySQL extends Driver {
 
 	Future rollBack() => exec("ROLLBACK");
 
-	bool setAttribute(int attr, mixed) {
-		// TODO implement this method
+	bool setAttribute(int attr, Object mixed) {
+		bool result = false;
+		if(attr == DDO.ATTR_ERRMODE && mixed == DDO.ERRMODE_EXCEPTION) {
+			_throwExceptions = true;
+		} else if(attr == DDO.ATTR_STATEMENT_CLASS && mixed is List && mixed[0] == 'LoggedDDOStatement') {
+			logging = true;
+		} else if(attr == DDO.ATTR_PERSISTENT && mixed != _persistent) {
+			result = true;
+			_persistent = (mixed as bool);
+			_connection.close();
+			//We should be checking persistent here and opening a persistent connection or not.
+			//Right now, persistent connections aren't supported
+			List<String> h = _dbinfo[0].split(':');
+			_connection = new DDOConnectionMySQL(host: h[0], port: int.parse(h[1]), user: _dbinfo[1], password: _dbinfo[2], db: _dbinfo[3]);
+
+		}
+		return result;
 	}
 
-	dynamic getAttribute(int attr) {
-  		// TODO implement this method
+	Object getAttribute(int attr) {
+  		Object result = false;
+  		switch(attr) {
+  			case DDO.ATTR_SERVER_INFO:
+  				break;
+  			case DDO.ATTR_SERVER_VERSION:
+  				break;
+  			case DDO.ATTR_CLIENT_VERSION:
+  				break;
+  			case DDO.ATTR_PERSISTENT:
+  				result = _persistent;
+  				break;
+  		}
+  		return result;
 	}
 
 	Future<DDOResults> _uQuery(String query) => _connection.query(query);

@@ -1,4 +1,4 @@
-part of ddo;
+part of dart_ddo;
 
 abstract class Driver {
 	DDO _containerDdo = null;
@@ -34,8 +34,8 @@ abstract class Driver {
 
 	String quote(String value);
 
-	dynamic getAttribute(int attr);
+	Object getAttribute(int attr);
 
-	bool setAttribute(int attr, dynamic mixed);
+	bool setAttribute(int attr, Object mixed);
 }
 

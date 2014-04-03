@@ -1,7 +1,7 @@
 /*
  * A port of the PDO library to Dart
  */
-library ddo;
+library dart_ddo;
 
 import 'statements/ddo_statement.dart';
 import 'connection/ddo_connection_mysql.dart';
@@ -40,9 +40,9 @@ class DDO {
 
 	Driver _driver;
 
-	DDO(String dsn, [String username = '', String password = '', List<String> driver_options = null] ){
+	DDO({String dsn, String username: '', String password: '', List<String> driver_options: null}){
 		Map<String, String> con = _getDsn(dsn);
-		switch(con['type']){
+		switch(con['dbtype']){
 			case 'mysql':
 				if(con.containsKey('port')){
 					con['host'] += ':' + con['port'];
@@ -72,6 +72,7 @@ class DDO {
 		Map<String, String> result = new Map<String, String>();
 		int pos = dsn.indexOf(':');
 		params = dsn.substring(pos+1).split(';');
+		result['dbtype'] = dsn.substring(0, pos).toLowerCase();
 		for(String str in params) {
 			tmp = str.split('=');
 			if(tmp.length == 2){

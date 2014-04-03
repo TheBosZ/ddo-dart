@@ -27,7 +27,7 @@ class DDOConnectionMySQL extends DDOConnection {
 				retres.affectedRows = results.affectedRows;
 			}
 			results.listen((Row row) {
-				retres.add(new DDOResult()..row.addAll(row));
+				retres.add(new DDOResult.fromMap(row.asMap()));
 			}).onDone(() {
 				completer.complete(retres);
 			});
