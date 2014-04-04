@@ -37,5 +37,7 @@ abstract class Driver {
 	Object getAttribute(int attr);
 
 	bool setAttribute(int attr, Object mixed);
+
+	Object quoteIdentifier(Object text);
 }
 

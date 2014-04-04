@@ -96,4 +96,19 @@ class DDOMySQL extends Driver {
 
 	Future<DDOResults> _uQuery(String query) => _connection.query(query);
 
+	Object quoteIdentifier(Object val) {
+		if(val is List) {
+			return (val.map((v) => quoteIdentifier(v)).toList());
+		}
+
+		if(val is String) {
+			if (val.contains(new RegExp(r'[" (\*]'))) {
+				return val;
+			}
+			return '"${val.replaceAll('.', '","')}"';
+		}
+
+		return val;
+	}
+
 }

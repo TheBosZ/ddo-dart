@@ -56,11 +56,7 @@ class DDO {
 				break;
 			case 'sqlite2':
 			case 'sqlite':
-				//Undefined
-				break;
 			case 'pgsql':
-				//Undefined
-				break;
 			default:
 				throw new Exception('Unknown database type "${con['type']}"');
 		}
@@ -109,6 +105,28 @@ class DDO {
 	bool setAttribute(int attr, dynamic mixed) => _driver.setAttribute(attr, mixed);
 
 	dynamic getAttribute(int attr) => _driver.getAttribute(attr);
+
+	Object quoteIdentifier(Object text) => _driver.quoteIdentifier(text);
+
+	Object prepareInput(Object val) {
+		if(val is List) {
+			return val.map((v) => prepareInput(v));
+		}
+
+		if(val is num) {
+			return val;
+		}
+
+		if(val is bool) {
+			return val ? 1 : 0;
+		}
+
+		if(val == null) {
+			return 'NULL';
+		}
+
+		return quote(val);
+	}
 
 	/*
 	 * Not implemented:
