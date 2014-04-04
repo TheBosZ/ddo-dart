@@ -40,7 +40,7 @@ class DDO {
 
 	Driver _driver;
 
-	DDO({String dsn, String username: '', String password: '', List<String> driver_options: null}){
+	DDO({String dsn, String username: '', String password: '', Map<int, int> driver_options: null}){
 		Map<String, String> con = _getDsn(dsn);
 		switch(con['dbtype']){
 			case 'mysql':
@@ -92,15 +92,17 @@ class DDO {
 
 	bool close() => _driver.close();
 
+	Future<int> exec(String query) => _driver.exec(query);
+
 	String get errorCode => _driver.errorCode;
 
 	List<String> get errorInfo => _driver.errorInfo;
 
-	int get lastInsertId => _driver.lastInsertId;
+	Object lastInsertId([String name = null]) => _driver.lastInsertId;
 
 	DDOStatement prepare(String query, [List array = null]) => _driver.prepare(query, array);
 
-	DDOStatement query(String query) => _driver.query(query);
+	Future<DDOStatement> query(String query) => _driver.query(query);
 
 	String quote(String val) => _driver.quote(val);
 

@@ -15,7 +15,7 @@ abstract class Driver {
 
 	List<String> get errorInfo => _errorInfo;
 
-	int get lastInsertId => _lastInsertId;
+	Object lastInsertId([String name = null]) => _lastInsertId;
 
 	//Abstracts
 	Future beginTransaction();
@@ -26,11 +26,11 @@ abstract class Driver {
 
 	Future commit();
 
-	Future<DDOResults> exec(String query);
+	Future<int> exec(String query);
 
 	DDOStatement prepare(String query, [List array = null]);
 
-	DDOStatement query(String query);
+	Future<DDOStatement> query(String query);
 
 	String quote(String value);
 

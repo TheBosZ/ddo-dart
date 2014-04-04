@@ -54,32 +54,32 @@ class DDOStatement {
   }
 
 	List<Object> fetchAll([int mode = DDO.FETCH_BOTH, int colIndex = 0]) {
-		Object results = null;
+		List<Object> results = null;
 		if(mode != null) {
 			switch(mode) {
 				case DDO.FETCH_NUM:
-					List<List<Object>> results = new List<List<Object>>();
+					results = new List<List<Object>>();
 					DDOResult r;
 					while((r = _result.fetchRow()) != null) {
 						results.add(r.toList());
 					}
 					break;
 				case DDO.FETCH_ASSOC:
-					List<Map<Object, Object>> results = new List<Map<Object, Object>>();
+					results = new List<Map<Object, Object>>();
 					DDOResult r;
 					while((r = _result.fetchRow()) != null) {
 						results.add(r.row);
 					}
 					break;
 				case DDO.FETCH_COLUMN:
-					List<Object> results = new List<Object>();
+					results = new List<Object>();
 					DDOResult r;
 					while((r = _result.fetchRow()) != null) {
 						results.add(r.row[colIndex]);
 					}
 					break;
 				case DDO.FETCH_OBJ:
-					List<Object> results = new List<Object>();
+					results = new List<Object>();
 					DDOResult r;
 					while((r = _result.fetchRow()) != null) {
 						results.add(r.toObject());
@@ -93,6 +93,7 @@ class DDOStatement {
 					}
 					break;
 				case DDO.FETCH_BOTH:
+					throw new UnimplementedError('FETCH_BOTH not implemented yet');
 				default:
 					break;
 			}
@@ -101,11 +102,11 @@ class DDOStatement {
 	}
 
   Object fetchColumn() {
-    // TODO: implement fetchColumn
+    throw new UnimplementedError('Not yet implemented');
   }
 
   int rowCount() {
-    // TODO: implement rowCount
+	  throw new UnimplementedError('Not yet implemented');
   }
 
   //Implemented methods

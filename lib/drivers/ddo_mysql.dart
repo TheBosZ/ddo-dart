@@ -29,28 +29,28 @@ class DDOMySQL extends Driver {
 
 	Future commit() => exec("COMMIT");
 
-	Future<DDOResults> exec(String query) {
+	Future<int> exec(String query) {
 		Completer completer = new Completer();
 		_uQuery(query).then((DDOResults results){
-			if(results.insertId != null) {
-				_lastInsertId = results.insertId;
-			}
 			if(results.affectedRows != null) {
-				_affectedRows = results.affectedRows;
+				completer.complete(_affectedRows = results.affectedRows);
 			}
-			completer.complete(results);
+			completer.complete(-1);
 		}, onError: (error) => completer.completeError(error));
 		return completer.future;
 	}
 
 	DDOStatement prepare(String query, [List array = null]) => new DDOStatement(query, _connection, _dbinfo, _containerDdo);
 
-	DDOStatement query(String query) {
+	Future<DDOStatement> query(String query) {
 		DDOStatement statement = new DDOStatement(
 			query, _connection, _dbinfo, _containerDdo
 		);
-		statement.query();
-		return statement;
+		Completer c = new Completer();
+		statement.query().then((_) {
+			c.complete(statement);
+		});
+		return c.future;
 	}
 
 	// Per http://dev.mysql.com/doc/refman/5.0/en/mysql-real-escape-string.html,
