@@ -16,8 +16,8 @@ class DDOStatement {
 	int _position = 0;
 	DDOResults _result;
 	int _numRows;
-	Map<String, Object> _namedParams;
-	List<Object> _boundParams;
+	Map<String, Object> _namedParams = new Map<String, Object>();
+	List<Object> _boundParams = new List<Object>();
 	Type _fetchClass;
 	int _fetchMode;
 	String _errorCode;
@@ -140,7 +140,7 @@ class DDOStatement {
 		return _position < _numRows;
 	}
 
-	void bindParam(Object mixed, String variable, [int type = null, int length = null]) {
+	void bindParam(Object mixed, Object variable, [int type = null, int length = null]) {
 		if (mixed is String) {
 			_namedParams[mixed] = variable;
 		} else {
@@ -149,7 +149,7 @@ class DDOStatement {
 	}
 
 	//What's the difference between this and bindParam?
-	void bindValue(Object mixed, String variable, [int type = null, int length = null]) {
+	void bindValue(Object mixed, Object variable, [int type = null, int length = null]) {
 		bindParam(mixed, variable, type, length);
 	}
 
@@ -170,7 +170,7 @@ class DDOStatement {
 				});
 			} else {
 				//do regular params
-				List params = prepareInput(_boundParams);
+				List params = prepareInput(_boundParams).toList();
 				if (params.length != '?'.allMatches(query).length) {
 					throw new Exception('Number of params doesn\'t match number of ?s');
 				}
