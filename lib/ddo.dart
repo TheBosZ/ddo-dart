@@ -3,7 +3,6 @@
  */
 library dart_ddo;
 
-import 'statements/ddo_statement.dart';
 import 'connection/ddo_connection_mysql.dart';
 import 'dart:async';
 
@@ -11,6 +10,7 @@ export 'connection/ddo_connection_mysql.dart';
 
 part 'drivers/driver.dart';
 part 'drivers/ddo_mysql.dart';
+part 'statements/ddo_statement.dart';
 
 
 class DDO {

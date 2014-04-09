@@ -1,8 +1,4 @@
-library ddo_statement;
-
-import '../ddo.dart';
-import '../connection/ddo_connection.dart';
-import 'dart:async';
+part of dart_ddo;
 
 //I keep going back and forth whether there needs to be individual statement classes
 //per driver. I *think* statements are abstract enough
@@ -170,7 +166,7 @@ class DDOStatement {
 				});
 			} else {
 				//do regular params
-				List params = prepareInput(_boundParams).toList();
+				List params = (prepareInput(_boundParams) as List);
 				if (params.length != '?'.allMatches(query).length) {
 					throw new Exception('Number of params doesn\'t match number of ?s');
 				}
