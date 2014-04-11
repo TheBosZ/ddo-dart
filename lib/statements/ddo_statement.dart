@@ -45,6 +45,16 @@ class DDOStatement {
 				case DDO.FETCH_NUM:
 					result = _result.fetchRow();
 					break;
+				case DDO.FETCH_ASSOC:
+					result = new Map<String, Object>();
+					DDOResult row = _result.fetchRow();
+					if(row == null) {
+						return null;
+					}
+					for(int x = 0; x < row.columnCount(); ++x) {
+						(result as Map<String, Object>)[_result.fields.elementAt(x)] = row.row.values.elementAt(x);
+					}
+					break;
 				default:
 					throw new ArgumentError("'${mode}' is not a valid fetch mode");
 			}

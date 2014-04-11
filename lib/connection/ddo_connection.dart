@@ -26,6 +26,7 @@ class DDOResults {
 	int insertId;
 	int affectedRows;
 	int cursor = 0;
+	List<String> fields;
 	List<DDOResult> _results = new List<DDOResult>();
 
 	List<DDOResult> get results => _results;
