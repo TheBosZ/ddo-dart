@@ -39,11 +39,14 @@ class DDOStatement {
 		if (mode == null) {
 			mode == DDO.FETCH_BOTH;
 		}
-		Object result = false;
+		Object result;
 		if (_result != null) {
 			switch (mode) {
 				case DDO.FETCH_NUM:
 					result = _result.fetchRow();
+					break;
+				default:
+					throw new ArgumentError("'${mode}' is not a valid fetch mode");
 			}
 		}
 		return result;
