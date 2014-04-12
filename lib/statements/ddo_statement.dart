@@ -22,38 +22,43 @@ class DDOStatement {
 	DDOStatement(this._query, this._connection, this._dbInfo, this._containerDdo);
 
 	Future<DDOResults> _uQuery(String query) {
-		return _connection.query(query).then((DDOResults results) {
+		Completer c = new Completer();
+		_connection.query(query).then((DDOResults results) {
 			_result = results;
-			return results;
+			c.complete(results);
 		});
+		return c.future;
 	}
 
 	int columnCount() {
 		return _result.columnCount();
 	}
 
-	Object fetch([int mode = null, Object cursor = null, int offset = null]) {
+	DDOResult fetch([int mode = null, Object cursor = null, int offset = null]) {
 		if (mode == null) {
 			mode = _fetchMode;
 		}
 		if (mode == null) {
 			mode == DDO.FETCH_BOTH;
 		}
-		Object result;
+		DDOResult result;
 		if (_result != null) {
 			switch (mode) {
 				case DDO.FETCH_NUM:
 					result = _result.fetchRow();
 					break;
 				case DDO.FETCH_ASSOC:
-					result = new Map<String, Object>();
+
+					Map<String, String> results = new Map<String, String>();
 					DDOResult row = _result.fetchRow();
+					result = row;
 					if(row == null) {
 						return null;
 					}
 					for(int x = 0; x < row.columnCount(); ++x) {
-						(result as Map<String, Object>)[_result.fields.elementAt(x)] = row.row.values.elementAt(x);
+						results[_result.fields.elementAt(x)] = row.row.values.elementAt(x).toString();
 					}
+					result.row = results;
 					break;
 				default:
 					throw new ArgumentError("'${mode}' is not a valid fetch mode");
@@ -110,20 +115,26 @@ class DDOStatement {
 		return results;
 	}
 
-	Future<Object> fetchColumn() {
-		throw new UnimplementedError('Not yet implemented');
+	Object fetchColumn([int colNumber = 0]) {
+		Object result;
+		if(_result != null) {
+			result = _result.results.first.row.values.elementAt(colNumber);
+		}
+		return result;
 	}
 
-	Future<int> rowCount() {
+	int rowCount() {
 		throw new UnimplementedError('Not yet implemented');
 	}
 
 	//Implemented methods
 	Future<bool> query() {
-		return _uQuery(_query).then((result) {
+		Completer c = new Completer();
+		_uQuery(_query).then((result) {
 			_result = result;
-			return result != null;
+			c.complete(result != null);
 		});
+		return c.future;
 	}
 
 	void rewind() {
@@ -190,10 +201,12 @@ class DDOStatement {
 		}
 		_namedParams = new Map();
 		_boundParams = new List();
-		return _uQuery(query).then((result) {
+		Completer c = new Completer();
+		_uQuery(query).then((result) {
 			_result = result;
-			return result != null;
+			c.complete(result != null);
 		});
+		return c.future;
 	}
 
 	Object prepareInput(Object value) {
