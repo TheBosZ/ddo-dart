@@ -1,4 +1,4 @@
-part of dart_ddo;
+part of ddo;
 
 //I keep going back and forth whether there needs to be individual statement classes
 //per driver. I *think* statements are abstract enough

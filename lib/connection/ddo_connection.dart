@@ -1,6 +1,11 @@
+library ddo_connection;
 
+import 'package:sqljocky/sqljocky.dart'; //Used for ddo_Mysql
 import 'dart:async';
 import 'dart:mirrors';
+
+part 'ddo_connection_mysql.dart';
+part 'ddo_connection_sqlite.dart';
 
 abstract class DDOConnection {
 

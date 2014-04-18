@@ -1,15 +1,15 @@
 /*
  * A port of the PDO library to Dart
  */
-library dart_ddo;
+library ddo;
 
-import 'connection/ddo_connection_mysql.dart';
+import 'connection/ddo_connection.dart';
 import 'dart:async';
 
-export 'connection/ddo_connection_mysql.dart';
 
 part 'drivers/driver.dart';
 part 'drivers/ddo_mysql.dart';
+part 'drivers/ddo_sqlite.dart';
 part 'statements/ddo_statement.dart';
 
 

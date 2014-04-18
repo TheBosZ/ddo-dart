@@ -1,8 +1,4 @@
-import 'ddo_connection.dart';
-import 'dart:async';
-import 'package:sqljocky/sqljocky.dart'; //Used for ddo_Mysql
-
-export 'ddo_connection.dart';
+part of ddo_connection;
 
 class DDOConnectionMySQL extends DDOConnection {
 

@@ -1,10 +1,9 @@
-part of dart_ddo;
+part of ddo;
 
 class DDOMySQL extends Driver {
 
 	bool logging = false;
 
-	DDOConnectionMySQL _connection;
 	bool _throwExceptions = false;
 	bool _persistent = false;
 

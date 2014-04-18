@@ -1,6 +1,7 @@
-part of dart_ddo;
+part of ddo;
 
 abstract class Driver {
+	DDOConnection _connection;
 	DDO _containerDdo = null;
 	List<String> _dbinfo;
 	String _errorCode;
