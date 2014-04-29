@@ -137,7 +137,7 @@ class DDOStatement {
 	}
 
 	int rowCount() {
-		throw new UnimplementedError('Not yet implemented');
+		return _result.affectedRows;
 	}
 
 	//Implemented methods
