@@ -5,6 +5,7 @@ library ddo;
 
 import 'connection/ddo_connection.dart';
 import 'dart:async';
+export 'connection/ddo_connection.dart';
 
 
 part 'drivers/driver.dart';
@@ -110,7 +111,7 @@ class DDO {
 
 	Object prepareInput(Object val) {
 		if(val is List) {
-			return val.map((v) => prepareInput(v));
+			return val.map((v) => prepareInput(v)).toList();
 		}
 
 		if(val is num) {

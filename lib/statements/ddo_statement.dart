@@ -34,14 +34,14 @@ class DDOStatement {
 		return _result.columnCount();
 	}
 
-	DDOResult fetch([int mode = null, Object cursor = null, int offset = null]) {
+	Object fetch([int mode = null, Object cursor = null, int offset = null]) {
 		if (mode == null) {
 			mode = _fetchMode;
 		}
 		if (mode == null) {
 			mode == DDO.FETCH_BOTH;
 		}
-		DDOResult result;
+		Object result;
 		if (_result != null) {
 			switch (mode) {
 				case DDO.FETCH_NUM:
@@ -59,6 +59,19 @@ class DDOStatement {
 						results[_result.fields.elementAt(x)] = row.row.values.elementAt(x).toString();
 					}
 					result.row = results;
+					break;
+				case DDO.FETCH_CLASS:
+
+					Map<String, String> results = new Map<String, String>();
+					DDOResult row = _result.fetchRow();
+					if(row == null) {
+						return null;
+					}
+					for(int x = 0; x < row.columnCount(); ++x) {
+						results[_result.fields.elementAt(x)] = row.row.values.elementAt(x).toString();
+					}
+					row.row = results;
+					result = row.toObject(_fetchClass);
 					break;
 				default:
 					throw new ArgumentError("'${mode}' is not a valid fetch mode");
@@ -190,7 +203,8 @@ class DDOStatement {
 				});
 			} else {
 				//do regular params
-				List params = (prepareInput(_boundParams) as List);
+				Object pinput = prepareInput(_boundParams);
+				List params = pinput.toList();
 				if (params.length != '?'.allMatches(query).length) {
 					throw new Exception('Number of params doesn\'t match number of ?s');
 				}
@@ -211,7 +225,7 @@ class DDOStatement {
 
 	Object prepareInput(Object value) {
 		if (value is List) {
-			return value.map((v) => prepareInput(v));
+			return value.map((v) => prepareInput(v)).toList();
 		}
 
 		if (value is int) {

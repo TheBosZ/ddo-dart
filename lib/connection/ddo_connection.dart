@@ -3,6 +3,7 @@ library ddo_connection;
 import 'package:sqljocky/sqljocky.dart'; //Used for ddo_Mysql
 import 'dart:async';
 import 'dart:mirrors';
+import 'string_format.dart';
 
 part 'ddo_connection_mysql.dart';
 part 'ddo_connection_sqlite.dart';
@@ -76,25 +77,26 @@ class DDOResult {
 	}
 
 	Object toObject([Type type = null]) {
+		Object newobj;
 		if(type != null) {
 			ClassMirror cm = reflectClass(type);
-			Object newobj = cm.newInstance(const Symbol(""), []);
-			//Using code from: http://stackoverflow.com/questions/22317924/obtain-getters-and-or-attribuites-from-classmirror-using-reflection-in-dart
-			cm.declarations.forEach((name, declaration){
-				VariableMirror field;
-				if(declaration is VariableMirror) {
-					field = declaration;
-					if(field != null) {
-						String index = MirrorSystem.getName(field.simpleName);
-						if(row.containsKey(index)){
-							cm.setField(field.simpleName, row[index]);
-						}
+			newobj = cm.newInstance(const Symbol(""), []).reflectee;
+			InstanceMirror im = reflect(newobj);
+			//Using code from: http://stackoverflow.com/questions/22317924
+			for(Symbol name in cm.instanceMembers.keys) {
+				MethodMirror declaration = cm.instanceMembers[name];
+
+				if(declaration.isSetter) {
+
+					String index = MirrorSystem.getName(declaration.simpleName);
+					String trimmedIndex = index.substring(index.indexOf('_') == 0 ? 1 : 0, index.lastIndexOf('='));
+					if(row.containsKey(trimmedIndex)){
+						im.invoke(new Symbol("set${StringFormat.titleCase(trimmedIndex)}"), [row[trimmedIndex]]);
 					}
+
 				}
-
-
-			});
+			}
 		}
-		return row;
+		return newobj;
 	}
 }

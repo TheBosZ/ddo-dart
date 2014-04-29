@@ -13,8 +13,8 @@ class DDOMySQL extends Driver {
 			h.add('3306');
 		}
 		_connection = new DDOConnectionMySQL(
-			host: h[0],
-			port: int.parse(h[1]),
+			host: h.elementAt(0),
+			port: int.parse(h.elementAt(1)),
 			user: username,
 			password: password,
 			db: dbname
