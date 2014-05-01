@@ -3,16 +3,11 @@
  */
 library ddo;
 
-import 'connection/ddo_connection.dart';
 import 'dart:async';
-export 'connection/ddo_connection.dart';
-
 
 part 'drivers/driver.dart';
-part 'drivers/ddo_mysql.dart';
-part 'drivers/ddo_sqlite.dart';
 part 'statements/ddo_statement.dart';
-
+part 'statements/ddo_results.dart';
 
 class DDO {
 	static const int FETCH_ASSOC = 2;
@@ -41,26 +36,7 @@ class DDO {
 
 	Driver _driver;
 
-	DDO({String dsn, String username: '', String password: '', Map<int, int> driver_options: null}){
-		Map<String, String> con = _getDsn(dsn);
-		switch(con['dbtype']){
-			case 'mysql':
-				if(con.containsKey('port')){
-					con['host'] += ':' + con['port'];
-				}
-				_driver = new DDOMySQL(
-					con['host'],
-					con['dbname'],
-					username,
-					password
-				);
-				break;
-			case 'sqlite2':
-			case 'sqlite':
-			case 'pgsql':
-			default:
-				throw new Exception('Unknown database type "${con['type']}"');
-		}
+	DDO(Driver this._driver){
 		_driver.containerDdo = this;
 	}
 
@@ -99,7 +75,14 @@ class DDO {
 
 	DDOStatement prepare(String query, [List array = null]) => _driver.prepare(query, array);
 
-	Future<DDOStatement> query(String query) => _driver.query(query);
+	Future<DDOStatement> query(String query) {
+		DDOStatement statement = new DDOStatement(query, _driver, this);
+		Completer c = new Completer();
+		statement.query().then((_) {
+			c.complete(statement);
+		});
+		return c.future;
+	}
 
 	String quote(String val) => _driver.quote(val);
 

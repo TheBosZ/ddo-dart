@@ -6,8 +6,7 @@ part of ddo;
 class DDOStatement {
 
 	String _query;
-	DDOConnection _connection;
-	List<String> _dbInfo;
+	Driver _connection;
 	DDO _containerDdo;
 	int _position = 0;
 	DDOResults _result;
@@ -19,7 +18,7 @@ class DDOStatement {
 	String _errorCode;
 	List _errorInfo;
 
-	DDOStatement(this._query, this._connection, this._dbInfo, this._containerDdo);
+	DDOStatement(this._query, Driver this._connection, this._containerDdo);
 
 	Future<DDOResults> _uQuery(String query) {
 		Completer c = new Completer();
@@ -58,7 +57,7 @@ class DDOStatement {
 					for(int x = 0; x < row.columnCount(); ++x) {
 						results[_result.fields.elementAt(x)] = row.row.values.elementAt(x).toString();
 					}
-					result.row = results;
+					(result as DDOResult).row = results;
 					break;
 				case DDO.FETCH_CLASS:
 
@@ -136,9 +135,9 @@ class DDOStatement {
 		return result;
 	}
 
-	int rowCount() {
-		return _result.affectedRows;
-	}
+	int rowCount() => _result.affectedRows;
+
+	int lastInsertId() => _result.insertId;
 
 	//Implemented methods
 	Future<bool> query() {
@@ -203,8 +202,7 @@ class DDOStatement {
 				});
 			} else {
 				//do regular params
-				Object pinput = prepareInput(_boundParams);
-				List params = pinput.toList();
+				List params = prepareInput(_boundParams) as List;
 				if (params.length != '?'.allMatches(query).length) {
 					throw new Exception('Number of params doesn\'t match number of ?s');
 				}

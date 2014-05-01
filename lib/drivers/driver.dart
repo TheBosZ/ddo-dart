@@ -1,22 +1,22 @@
 part of ddo;
 
 abstract class Driver {
-	DDOConnection _connection;
-	DDO _containerDdo = null;
-	List<String> _dbinfo;
-	String _errorCode;
-	List<String> _errorInfo;
-	int _lastInsertId;
-	int _affectedRows;
+	DDO containerDdo = null;
+	List<String> dbinfo;
+	String errorCode;
+	List<String> errorInfo;
+	int lastInsertId;
+	int affectedRows;
+	bool logging = false;
+
+	int errorNo;
+	String error;
+	List<List> results;
+
+	bool throwExceptions = false;
+	bool persistent = false;
 
 	//Methods
-	set containerDdo(DDO ddo) => this._containerDdo = ddo;
-
-	String get errorCode => _errorCode;
-
-	List<String> get errorInfo => _errorInfo;
-
-	Object lastInsertId([String name = null]) => _lastInsertId;
 
 	//Abstracts
 	Future beginTransaction();
@@ -27,12 +27,6 @@ abstract class Driver {
 
 	Future commit();
 
-	Future<int> exec(String query);
-
-	DDOStatement prepare(String query, [List array = null]);
-
-	Future<DDOStatement> query(String query);
-
 	String quote(String value);
 
 	Object getAttribute(int attr);
@@ -40,5 +34,30 @@ abstract class Driver {
 	bool setAttribute(int attr, Object mixed);
 
 	Object quoteIdentifier(Object text);
-}
 
+	Future<int> exec(String query) {
+		Completer completer = new Completer();
+		uQuery(query).then((DDOResults results) {
+			if (results.insertId != null) {
+				lastInsertId = results.insertId;
+			}
+			if (results.affectedRows != null) {
+				completer.complete(affectedRows = results.affectedRows);
+			}
+			completer.complete(-1);
+		}, onError: (error) => completer.completeError(error));
+		return completer.future;
+	}
+
+	DDOStatement prepare(String query, [List array = null]) => new DDOStatement(query, this, containerDdo);
+
+	Future<DDOResults> query(String query) {
+		return uQuery(query);
+	}
+
+	Future<DDOResults> uQuery(String query);
+
+	int getAffectedRows() {
+		return affectedRows;
+	}
+}

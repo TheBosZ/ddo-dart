@@ -1,32 +1,4 @@
-library ddo_connection;
-
-import 'package:sqljocky/sqljocky.dart'; //Used for ddo_Mysql
-import 'dart:async';
-import 'dart:mirrors';
-import 'string_format.dart';
-
-part 'ddo_connection_mysql.dart';
-part 'ddo_connection_sqlite.dart';
-
-abstract class DDOConnection {
-
-	int _affectedRows;
-	int _errorNo;
-	String _error;
-	List<List> _results;
-
-	int getAffectedRows() {
-		return _affectedRows;
-	}
-
-	int get errorNo => _errorNo;
-
-	String get error => _error;
-
-	Future<DDOResults> query(String query);
-
-	bool close();
-}
+part of ddo;
 
 class DDOResults {
 	int insertId;
