@@ -13,7 +13,7 @@ class DDOStatement {
 	int _numRows;
 	Map<String, Object> _namedParams = new Map<String, Object>();
 	List<Object> _boundParams = new List<Object>();
-	Type _fetchClass;
+	ClassMirror _fetchClass;
 	int _fetchMode;
 	String _errorCode;
 	List _errorInfo;
@@ -44,7 +44,7 @@ class DDOStatement {
 		if (_result != null) {
 			switch (mode) {
 				case DDO.FETCH_NUM:
-					result = _result.fetchRow();
+					result = _result.fetchNum();
 					break;
 				case DDO.FETCH_ASSOC:
 
@@ -241,7 +241,7 @@ class DDOStatement {
 		return _containerDdo.quote(value);
 	}
 
-	bool setFetchMode(int mode, [Type cla = null]) {
+	bool setFetchMode(int mode, [ClassMirror cla = null]) {
 		bool result = false;
 		switch (mode) {
 			case DDO.FETCH_CLASS:

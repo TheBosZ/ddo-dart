@@ -79,9 +79,13 @@ class DDOWebSQL extends Driver {
 			tx.executeSql(query, [], (tx, SqlResultSet results) {
 
 				DDOResults retres = new DDOResults();
-				if (results.insertId != null) {
-					retres.insertId = results.insertId;
-				}
+				try {
+					if (results.insertId != null) {
+						retres.insertId = results.insertId;
+					}
+				} catch (e) {
+                  // Nope, wasn't there.
+                }
 				if (results.rowsAffected != null) {
 					retres.affectedRows = results.rowsAffected;
 				}

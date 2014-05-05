@@ -43,8 +43,9 @@ abstract class Driver {
 			}
 			if (results.affectedRows != null) {
 				completer.complete(affectedRows = results.affectedRows);
+			} else {
+				completer.complete(-1);
 			}
-			completer.complete(-1);
 		}, onError: (error) => completer.completeError(error));
 		return completer.future;
 	}
