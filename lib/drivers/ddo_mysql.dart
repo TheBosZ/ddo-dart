@@ -105,4 +105,14 @@ class DDOMySQL extends Driver {
 		_connection.close();
 		return true;
 	}
+
+	String applyLimit(String sql, int offset, int limit) {
+		if(limit > 0) {
+			String off = offset > 0 ? "${offset}, " : "";
+			sql = "${sql} LIMIT ${off} ${limit}";
+		} else if(offset > 0) {
+			sql = "${sql} LIMIT ${offset}, 18446744073709551615";
+		}
+		return sql;
+	}
 }

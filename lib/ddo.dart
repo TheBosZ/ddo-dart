@@ -4,6 +4,10 @@
 library ddo;
 
 import 'dart:async';
+@MirrorsUsed(
+	targets: 'DDO,Driver,DDOStatement,DDOResults,DDOResult',
+	override: '*'
+)
 import 'dart:mirrors';
 
 part 'drivers/driver.dart';
@@ -112,6 +116,8 @@ class DDO {
 
 		return quote(val);
 	}
+
+	String applyLimit(String sql, int offset, int limit) => _driver.applyLimit(sql, offset, limit);
 
 	/*
 	 * Not implemented:

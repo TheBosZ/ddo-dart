@@ -67,7 +67,9 @@ class DDOStatement {
 						return null;
 					}
 					for(int x = 0; x < row.columnCount(); ++x) {
-						results[_result.fields.elementAt(x)] = row.row.values.elementAt(x).toString();
+						if(_result.fields.isNotEmpty && _result.fields.length >= x) {
+							results[_result.fields.elementAt(x)] = row.row.values.elementAt(x).toString();
+						}
 					}
 					row.row = results;
 					result = row.toObject(_fetchClass);

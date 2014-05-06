@@ -61,4 +61,6 @@ abstract class Driver {
 	int getAffectedRows() {
 		return affectedRows;
 	}
+
+	String applyLimit(String sql, int offset, int limit);
 }

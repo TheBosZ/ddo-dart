@@ -70,21 +70,18 @@ class DDOResult {
 						bool found = false;
 						var symb;
 						var value = row[trimmedIndex];
-						switch (fieldType) {
-							case int:
-								if(value != null && value.toString() != 'null') {
-									try {
-										value = int.parse(value);
-									} catch (e) {
-										print("nathan '${value}'");
-										throw e;
-									}
+						if(fieldType == int) {
+							if(value != null && value.toString() != 'null') {
+								try {
+									value = int.parse(value);
+								} catch (e) {
+									throw e;
 								}
-								break;
+							}
 						}
 						if (foundLib != null) {
 							try {
-								symb = MirrorSystem.getSymbol("_${trimmedIndex}", foundLib);
+								symb = MirrorSystem.getSymbol("${trimmedIndex}", foundLib);
 
 								im.setField(symb, value);
 								found = true;
@@ -94,7 +91,7 @@ class DDOResult {
 						} else {
 							for (LibraryMirror lib in currentMirrorSystem().libraries.values) {
 								try {
-									symb = MirrorSystem.getSymbol("_${trimmedIndex}", lib);
+									symb = MirrorSystem.getSymbol("${trimmedIndex}", lib);
 									im.setField(symb, value);
 									found = true;
 									foundLib = lib;

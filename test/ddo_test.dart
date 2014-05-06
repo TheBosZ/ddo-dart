@@ -1,8 +1,12 @@
-library ddo_test;
 
 import 'package:unittest/unittest.dart';
 import '../lib/ddo.dart';
 import '../lib/drivers/ddo_mysql.dart';
+@MirrorsUsed(
+	targets: 'DDO,Driver',
+	override: '*'
+)
+import 'dart:mirrors';
 
 main() {
 	Driver driver = new DDOMySQL('127.0.0.1', 'wishlist', 'root', 'kc7nqs');

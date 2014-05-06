@@ -2,6 +2,11 @@ import '../ddo.dart';
 import 'dart:web_sql';
 import 'dart:async';
 import 'dart:html';
+@MirrorsUsed(
+	targets: 'DDOWebSQL',
+	override: '*'
+)
+import 'dart:mirrors';
 
 class DDOWebSQL extends Driver {
 
@@ -77,7 +82,9 @@ class DDOWebSQL extends Driver {
 		Completer completer = new Completer();
 		_db.transaction((SqlTransaction tx) {
 			tx.executeSql(query, [], (tx, SqlResultSet results) {
-
+				if(query.indexOf('insert into') != -1) {
+					throw new Exception('Here');
+				}
 				DDOResults retres = new DDOResults();
 				try {
 					if (results.insertId != null) {
@@ -90,7 +97,12 @@ class DDOWebSQL extends Driver {
 					retres.affectedRows = results.rowsAffected;
 				}
 				retres.fields = new List<String>();
-
+				if(results.rows.isNotEmpty) {
+					Map f = results.rows.elementAt(0);
+					for(String name in f.keys) {
+						retres.fields.add(name);
+					}
+				}
 				for (Map row in results.rows) {
 					retres.add(new DDOResult.fromMap(row));
 				}
@@ -99,5 +111,14 @@ class DDOWebSQL extends Driver {
 			});
 		});
 		return completer.future;
+	}
+
+	String applyLimit(String sql, int offset, int limit) {
+		if (limit >0) {
+			sql = "${sql} LIMIT ${limit} ${offset > 0 ? ' OFFSET' : ''}";
+		} else if (offset > 0) {
+			sql = "${sql} LIMIT -1 OFFSET ${offset}";
+		}
+		return sql;
 	}
 }
