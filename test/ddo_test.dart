@@ -9,7 +9,7 @@ import '../lib/drivers/ddo_mysql.dart';
 import 'dart:mirrors';
 
 main() {
-	Driver driver = new DDOMySQL('127.0.0.1', 'wishlist', 'root', 'kc7nqs');
+	Driver driver = new DDOMySQL('127.0.0.1', 'example', 'root', '');
 	DDO ddo = new DDO(driver);
 	test('Quote correctly', (){
 		expect(ddo.quote(r"''\Nathan"), equals("\'\\'\\'\\\\Nathan\'"));
