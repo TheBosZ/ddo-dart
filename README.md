@@ -68,11 +68,11 @@ main() {
   DDO ddo = new DDO(driver);
   ddo.query('select * from user').then((DDOStatement stmt){
   DDOResults results = (stmt.fetchAll(DDO.FETCH_ASSOC) as DDOResults);
-  for(DDOResult row in results.results) {
-  	for(String cName in row.row.keys) {
-  		print("Column '${cName}' has value '${row.row[cName]}'");
-  	}
-  }
+    for(DDOResult row in results.results) {
+    	for(String cName in row.row.keys) {
+    		print("Column '${cName}' has value '${row.row[cName]}'");
+    	}
+    }
   });
 }
 ````
