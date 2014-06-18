@@ -82,9 +82,6 @@ class DDOWebSQL extends Driver {
 		Completer completer = new Completer();
 		_db.transaction((SqlTransaction tx) {
 			tx.executeSql(query, [], (tx, SqlResultSet results) {
-				if(query.indexOf('insert into') != -1) {
-					throw new Exception('Here');
-				}
 				DDOResults retres = new DDOResults();
 				try {
 					if (results.insertId != null) {
@@ -108,6 +105,8 @@ class DDOWebSQL extends Driver {
 				}
 				completer.complete(retres);
 
+			}, (tx, SqlError err){
+				completer.completeError(err);
 			});
 		});
 		return completer.future;
