@@ -13,7 +13,12 @@ class DDOMySQL extends Driver {
 		}
 
 		_connection = new ConnectionPool(host: h.elementAt(0), port: int.parse(h.elementAt(1)), user: username, password: password, db: dbname, max: 5);
-		dbinfo = [host, username, password, dbname];
+		dbinfo = {
+			'host': host,
+			'username': username,
+			'password': password,
+			'dbname': dbname
+		};
 	}
 
 	Future<int> beginTransaction() => exec("BEGIN");
@@ -40,7 +45,7 @@ class DDOMySQL extends Driver {
 			_close();
 			//We should be checking persistent here and opening a persistent connection or not.
 			//Right now, persistent connections aren't supported
-			List<String> h = dbinfo[0].split(':');
+			List<String> h = dbinfo['host'].split(':');
 			_connection = new ConnectionPool(host: h[0], port: int.parse(h[1]), user: dbinfo[1], password: dbinfo[2], db: dbinfo[3], max: 5);
 
 		}
@@ -107,10 +112,10 @@ class DDOMySQL extends Driver {
 	}
 
 	String applyLimit(String sql, int offset, int limit) {
-		if(limit > 0) {
+		if (limit > 0) {
 			String off = offset > 0 ? "${offset}, " : "";
 			sql = "${sql} LIMIT ${off} ${limit}";
-		} else if(offset > 0) {
+		} else if (offset > 0) {
 			sql = "${sql} LIMIT ${offset}, 18446744073709551615";
 		}
 		return sql;

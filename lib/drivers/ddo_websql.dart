@@ -20,7 +20,12 @@ class DDOWebSQL extends Driver {
 			estimatedSize = 1024 * 1024 * 4;
 		}
 		_db = window.openDatabase(name, version, displayName, estimatedSize, callback);
-		dbinfo = [name];
+		dbinfo = {
+			'dbname': name,
+			'version': version,
+			'displayName': displayName,
+			'estimatedSize': estimatedSize,
+		};
 	}
 
 	@override

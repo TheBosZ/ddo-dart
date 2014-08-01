@@ -2,7 +2,7 @@ part of ddo;
 
 abstract class Driver {
 	DDO containerDdo = null;
-	List<String> dbinfo;
+	Map<String, String> dbinfo;
 	String errorCode;
 	List<String> errorInfo;
 	int lastInsertId;
