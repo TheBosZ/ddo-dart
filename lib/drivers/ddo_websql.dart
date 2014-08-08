@@ -25,6 +25,7 @@ class DDOWebSQL extends Driver {
 			'version': version,
 			'displayName': displayName,
 			'estimatedSize': estimatedSize,
+			'driver': 'websql',
 		};
 	}
 

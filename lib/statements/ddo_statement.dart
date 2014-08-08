@@ -93,10 +93,14 @@ class DDOStatement {
 					}
 					break;
 				case DDO.FETCH_ASSOC:
-					results = new List<Map<Object, Object>>();
+					results = new List<Map<String, Object>>();
 					DDOResult r;
 					while ((r = _result.fetchRow()) != null) {
-						results.add(r.row);
+						Map<String, Object> row = new Map<String, Object>();
+						for(int i in r.row.keys) {
+							row[_result.fields.elementAt(i)] = r.row[i];
+						}
+						results.add(row);
 					}
 					break;
 				case DDO.FETCH_COLUMN:

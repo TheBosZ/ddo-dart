@@ -17,7 +17,8 @@ class DDOMySQL extends Driver {
 			'host': host,
 			'username': username,
 			'password': password,
-			'dbname': dbname
+			'dbname': dbname,
+			'driver': 'mysql',
 		};
 	}
 
