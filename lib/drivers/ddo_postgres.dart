@@ -1,25 +1,42 @@
 import '../ddo.dart';
-import 'package:sqljocky/sqljocky.dart';
+import 'package:postgresql/postgresql.dart';
+import 'package:postgresql/postgresql_pool.dart';
 import 'dart:async'; //Used for ddo_Mysql
 
-class DDOMySQL extends Driver {
+class DDOPostgres extends Driver {
 
-	ConnectionPool _connection;
+	Pool _connectionPool;
 
-	DDOMySQL(String host, String dbname, String username, String password) {
+	DDOPostgres(String host, String dbname, String username, String password, [bool sslmode = false]) {
+		int port;
+
 		List<String> h = host.split(':');
+		String tempHost;
 		if (h.length < 2) {
-			h.add('3306');
+			port = 5432;
+			tempHost = "${host}:5432";
+		} else {
+			port = int.parse(h[1]);
 		}
 
-		_connection = new ConnectionPool(host: h.elementAt(0), port: int.parse(h.elementAt(1)), user: username, password: password, db: dbname, max: 5);
+		_connectionPool = new Pool(_buildUri(h.first, dbname, port, username, password, sslmode));
+
 		dbinfo = {
-			'host': host,
+			'host': tempHost,
 			'username': username,
 			'password': password,
 			'dbname': dbname,
+			'ssl': sslmode.toString(),
 			'driver': 'mysql',
 		};
+	}
+
+	Future<Connection> _getConnection() {
+		return _connectionPool.connect();
+	}
+
+	String _buildUri(String host, String dbname, int port, String username, String password, [bool sslmode = false]) {
+		return "postgres://${username}:${password}@${host}:${port.toString()}/${dbname}${sslmode ? '?sslmode=require':''}";
 	}
 
 	Future<int> beginTransaction() => exec("BEGIN");
@@ -47,8 +64,7 @@ class DDOMySQL extends Driver {
 			//We should be checking persistent here and opening a persistent connection or not.
 			//Right now, persistent connections aren't supported
 			List<String> h = dbinfo['host'].split(':');
-			_connection = new ConnectionPool(host: h[0], port: int.parse(h[1]), user: dbinfo['username'], password: dbinfo['password'], db: dbinfo['dbname'], max: 5);
-
+			_connectionPool = new Pool(_buildUri(h.first, dbinfo['dbname'], int.parse(h[1]), dbinfo['username'], dbinfo['password'], dbinfo['sslmode'] == true.toString()));
 		}
 		return result;
 	}
@@ -85,39 +101,41 @@ class DDOMySQL extends Driver {
 	}
 
 	Future<DDOResults> uQuery(String query) {
-		Completer completer = new Completer();
-		_connection.query(query).then((Results results) {
-			DDOResults retres = new DDOResults();
-			if (results.insertId != null) {
-				retres.insertId = results.insertId;
-			}
-			if (results.affectedRows != null) {
-				retres.affectedRows = results.affectedRows;
-			}
-			retres.fields = new List<String>();
-			for (Field field in results.fields) {
-				retres.fields.add(field.name);
-			}
-			results.listen((Row row) {
-				retres.add(new DDOResult.fromMap(row.asMap()));
-			}).onDone(() {
-				completer.complete(retres);
+		return _getConnection().then((Connection connection){
+			return connection.query(query).toList().then((List<Row> results) {
+				DDOResults retres = new DDOResults();
+	//			if (results.insertId != null) {
+	//				retres.insertId = results.insertId;
+	//			}
+	//			if (results.affectedRows != null) {
+	//				retres.affectedRows = results.affectedRows;
+	//			}
+	//			retres.fields = new List<String>();
+	//			for (Field field in results.fields) {
+	//				retres.fields.add(field.name);
+	//			}
+				for(Row row in results) {
+					row.forEach((String col, Object val){
+						retres.add(new DDOResult.fromMap({col: val}));
+					});
+
+				}
+				return retres;
 			});
-		}, onError: (error) => completer.completeError(error));
-		return completer.future;
+		});
 	}
 
 	bool _close() {
-		_connection.close();
+		_connectionPool.destroy();
 		return true;
 	}
 
 	String applyLimit(String sql, int offset, int limit) {
 		if (limit > 0) {
-			String off = offset > 0 ? "${offset}, " : "";
-			sql = "${sql} LIMIT ${off} ${limit}";
-		} else if (offset > 0) {
-			sql = "${sql} LIMIT ${offset}, 18446744073709551615";
+			sql = "${sql} LIMIT ${limit}";
+		}
+		if (offset > 0) {
+			sql = "${sql} OFFSET ${offset}";
 		}
 		return sql;
 	}
