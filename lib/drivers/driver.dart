@@ -36,18 +36,16 @@ abstract class Driver {
 	Object quoteIdentifier(Object text);
 
 	Future<int> exec(String query) {
-		Completer completer = new Completer();
-		uQuery(query).then((DDOResults results) {
+		return uQuery(query).then((DDOResults results) {
 			if (results.insertId != null) {
 				lastInsertId = results.insertId;
 			}
 			if (results.affectedRows != null) {
-				completer.complete(affectedRows = results.affectedRows);
-			} else {
-				completer.complete(-1);
+				affectedRows = results.affectedRows;
+				return affectedRows;
 			}
-		}, onError: (error) => completer.completeError(error));
-		return completer.future;
+			return -1;
+		});
 	}
 
 	DDOStatement prepare(String query, [List array = null]) => new DDOStatement(query, this, containerDdo);

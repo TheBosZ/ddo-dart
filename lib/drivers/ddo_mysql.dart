@@ -85,8 +85,7 @@ class DDOMySQL extends Driver {
 	}
 
 	Future<DDOResults> uQuery(String query) {
-		Completer completer = new Completer();
-		_connection.query(query).then((Results results) {
+		return _connection.query(query).then((Results results) {
 			DDOResults retres = new DDOResults();
 			if (results.insertId != null) {
 				retres.insertId = results.insertId;
@@ -101,10 +100,9 @@ class DDOMySQL extends Driver {
 			results.listen((Row row) {
 				retres.add(new DDOResult.fromMap(row.asMap()));
 			}).onDone(() {
-				completer.complete(retres);
+				return retres;
 			});
-		}, onError: (error) => completer.completeError(error));
-		return completer.future;
+		});
 	}
 
 	bool _close() {

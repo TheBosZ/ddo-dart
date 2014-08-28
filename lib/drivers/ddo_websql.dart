@@ -85,6 +85,7 @@ class DDOWebSQL extends Driver {
 
 	@override
 	Future<DDOResults> uQuery(String query) {
+		//Because the WebSQL was written before the async stuff was fully in place and hasn't been updated, we have to wrap it ourselves
 		Completer completer = new Completer();
 		_db.transaction((SqlTransaction tx) {
 			tx.executeSql(query, [], (tx, SqlResultSet results) {

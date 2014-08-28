@@ -82,11 +82,7 @@ class DDO {
 
 	Future<DDOStatement> query(String query) {
 		DDOStatement statement = new DDOStatement(query, _driver, this);
-		Completer c = new Completer();
-		statement.query().then((_) {
-			c.complete(statement);
-		});
-		return c.future;
+		return statement.query().then((_) => statement);
 	}
 
 	String quote(String val) => _driver.quote(val);

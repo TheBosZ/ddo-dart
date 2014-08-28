@@ -104,21 +104,15 @@ class DDOPostgres extends Driver {
 		return _getConnection().then((Connection connection){
 			return connection.query(query).toList().then((List<Row> results) {
 				DDOResults retres = new DDOResults();
-	//			if (results.insertId != null) {
-	//				retres.insertId = results.insertId;
-	//			}
-	//			if (results.affectedRows != null) {
-	//				retres.affectedRows = results.affectedRows;
-	//			}
-	//			retres.fields = new List<String>();
-	//			for (Field field in results.fields) {
-	//				retres.fields.add(field.name);
-	//			}
+				retres.fields = new List<String>();
+
 				for(Row row in results) {
 					row.forEach((String col, Object val){
+						if (!retres.fields.contains(col)) {
+							retres.fields.add(col);
+						}
 						retres.add(new DDOResult.fromMap({col: val}));
 					});
-
 				}
 				return retres;
 			});

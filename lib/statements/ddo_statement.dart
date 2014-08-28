@@ -21,12 +21,10 @@ class DDOStatement {
 	DDOStatement(this._query, Driver this._connection, this._containerDdo);
 
 	Future<DDOResults> _uQuery(String query) {
-		Completer c = new Completer();
-		_connection.query(query).then((DDOResults results) {
+		return _connection.query(query).then((DDOResults results) {
 			_result = results;
-			c.complete(results);
+			return results;
 		});
-		return c.future;
 	}
 
 	int columnCount() {
@@ -147,12 +145,10 @@ class DDOStatement {
 
 	//Implemented methods
 	Future<bool> query() {
-		Completer c = new Completer();
-		_uQuery(_query).then((result) {
+		return _uQuery(_query).then((result) {
 			_result = result;
-			c.complete(result != null);
+			return result != null;
 		});
-		return c.future;
 	}
 
 	void rewind() {
@@ -219,12 +215,10 @@ class DDOStatement {
 		}
 		_namedParams = new Map();
 		_boundParams = new List();
-		Completer c = new Completer();
-		_uQuery(query).then((result) {
+		return _uQuery(query).then((result) {
 			_result = result;
-			c.complete(result != null);
+			return result != null;
 		});
-		return c.future;
 	}
 
 	Object prepareInput(Object value) {
