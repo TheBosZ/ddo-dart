@@ -84,29 +84,27 @@ class DDOMySQL extends Driver {
 		return val;
 	}
 
-	Future<DDOResults> uQuery(String query) {
-		return _connection.query(query).then((Results results) {
-			DDOResults retres = new DDOResults();
-			if (results.insertId != null) {
-				retres.insertId = results.insertId;
-			}
-			if (results.affectedRows != null) {
-				retres.affectedRows = results.affectedRows;
-			}
-			retres.fields = new List<String>();
-			for (Field field in results.fields) {
-				retres.fields.add(field.name);
-			}
-			results.listen((Row row) {
-				retres.add(new DDOResult.fromMap(row.asMap()));
-			}).onDone(() {
-				return retres;
-			});
+	Future<DDOResults> uQuery(String query) async {
+		Results results = await _connection.query(query);
+		DDOResults retres = new DDOResults();
+		if (results.insertId != null) {
+			retres.insertId = results.insertId;
+		}
+		if (results.affectedRows != null) {
+			retres.affectedRows = results.affectedRows;
+		}
+		retres.fields = new List<String>();
+		for (Field field in results.fields) {
+			retres.fields.add(field.name);
+		}
+		await results.forEach((Row row) {
+			retres.add(new DDOResult.fromMap(row.asMap()));
 		});
+		return retres;
 	}
 
 	bool _close() {
-		_connection.close();
+		_connection.closeConnectionsWhenNotInUse();
 		return true;
 	}
 

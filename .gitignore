@@ -3,3 +3,6 @@ packages
 .project
 pubspec.lock
 test
+.idea
+/.packages
+bin
