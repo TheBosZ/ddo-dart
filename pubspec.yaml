@@ -1,5 +1,5 @@
 name: ddo
-version: 0.2.7
+version: 0.2.8
 author: Nathan Kerr <nathankerr@gmail.com>
 description: A port of PHP Data Objects to Dart.
 homepage: https://github.com/TheBosZ/ddo-dart
@@ -9,3 +9,5 @@ dependencies:
 dev_dependencies:
   browser: any
   test: '^0.12.10'
+environment:
+  sdk: ">=1.8.0 <2.0.0"
