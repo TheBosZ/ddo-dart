@@ -4,8 +4,8 @@ author: Nathan Kerr <nathankerr@gmail.com>
 description: A port of PHP Data Objects to Dart.
 homepage: https://github.com/TheBosZ/ddo-dart
 dependencies:
-  postgresql: '>=0.3.4+1 <0.4.0'
-  sqljocky: '>=0.11.0 <0.12.0'
+  postgresql: '>=0.2.14 <0.3.0'
+  sqljocky: '^0.14.1'
 dev_dependencies:
   browser: any
-  unittest: '>=0.11.0+3 <0.12.0'
+  test: '^0.12.10'

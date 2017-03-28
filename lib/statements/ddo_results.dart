@@ -53,7 +53,7 @@ class DDOResult {
 	Object toObject([ClassMirror cm = null]) {
 		Object newobj;
 		if (cm != null) {
-			newobj = cm.newInstance(const Symbol(""), []).reflectee;
+			newobj = cm.newInstance(const Symbol(""), const []).reflectee;
 			InstanceMirror im = reflect(newobj);
 			LibraryMirror foundLib;
 			List<String> probs = new List<String>();

@@ -90,25 +90,21 @@ class DDOMySQL extends Driver {
 		if (results.insertId != null) {
 			retres.insertId = results.insertId;
 		}
-
 		if (results.affectedRows != null) {
 			retres.affectedRows = results.affectedRows;
 		}
-
 		retres.fields = new List<String>();
 		for (Field field in results.fields) {
 			retres.fields.add(field.name);
 		}
-
-		await for(Row row in results) {
+		await results.forEach((Row row) {
 			retres.add(new DDOResult.fromMap(row.asMap()));
-		}
-
+		});
 		return retres;
 	}
 
 	bool _close() {
-		_connection.close();
+		_connection.closeConnectionsWhenNotInUse();
 		return true;
 	}
 
