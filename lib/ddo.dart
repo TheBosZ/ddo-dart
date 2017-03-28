@@ -80,9 +80,10 @@ class DDO {
 
 	DDOStatement prepare(String query, [List array = null]) => _driver.prepare(query, array);
 
-	Future<DDOStatement> query(String query) {
+	Future<DDOStatement> query(String query) async {
 		DDOStatement statement = new DDOStatement(query, _driver, this);
-		return statement.query().then((_) => statement);
+		await statement.query();
+		return statement;
 	}
 
 	String quote(String val) => _driver.quote(val);

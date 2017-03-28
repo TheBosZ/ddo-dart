@@ -35,17 +35,20 @@ abstract class Driver {
 
 	Object quoteIdentifier(Object text);
 
-	Future<int> exec(String query) {
-		return uQuery(query).then((DDOResults results) {
-			if (results.insertId != null) {
-				lastInsertId = results.insertId;
-			}
-			if (results.affectedRows != null) {
-				affectedRows = results.affectedRows;
-				return affectedRows;
-			}
+	Future<int> exec(String query) async {
+		DDOResults results = await uQuery(query);
+		if (results == null) {
 			return -1;
-		});
+		}
+
+		if (results.insertId != null) {
+			lastInsertId = results.insertId;
+		}
+		if (results.affectedRows != null) {
+			affectedRows = results.affectedRows;
+			return affectedRows;
+		}
+		return -1;
 	}
 
 	DDOStatement prepare(String query, [List array = null]) => new DDOStatement(query, this, containerDdo);

@@ -100,23 +100,22 @@ class DDOPostgres extends Driver {
 		return val;
 	}
 
-	Future<DDOResults> uQuery(String query) {
-		return _getConnection().then((Connection connection){
-			return connection.query(query).toList().then((List<Row> results) {
-				DDOResults retres = new DDOResults();
-				retres.fields = new List<String>();
+	Future<DDOResults> uQuery(String query) async {
+		Connection connection = await _getConnection();
+		List<Row> results = await connection.query(query).toList();
+		DDOResults retres = new DDOResults();
+		retres.fields = new List<String>();
 
-				for(Row row in results) {
-					row.forEach((String col, Object val){
-						if (!retres.fields.contains(col)) {
-							retres.fields.add(col);
-						}
-						retres.add(new DDOResult.fromMap({col: val}));
-					});
+		for(Row row in results) {
+			row.forEach((String col, Object val){
+				if (!retres.fields.contains(col)) {
+					retres.fields.add(col);
 				}
-				return retres;
+				retres.add(new DDOResult.fromMap({col: val}));
 			});
-		});
+		}
+		return retres;
+
 	}
 
 	bool _close() {

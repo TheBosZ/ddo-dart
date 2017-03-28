@@ -63,23 +63,35 @@ FETCH_ASSOC will return a Map with the Keys being the column names and the value
 Except for FETCH_CLASS, the returned value will be a DDOResult object (for fetch) or a DDOResults object (for fetchAll). A DDOResults object has many DDOResult results. A DDOResult has a row object containing the values retrieved from the database. This may be an unnecessary abstraction, so I'll revisit this in the future
 
 ## Full Example
-This example will query the user table and print out, for every row, every column and its values. Note that the database needs to exist, the connection parameters need to be correct and there needs to be a 'user' table.
+This example will query the user table and print out, for every row, every column and its values. Note that the database schema `example` needs to exist and the connection parameters need to be correct.
 
 ````Dart
 import 'package:ddo/ddo.dart';
 import 'package:ddo/drivers/ddo_mysql.dart';
 
-main() {
-  Driver driver = new DDOMySQL('127.0.0.1', 'example', 'root', '');
-  DDO ddo = new DDO(driver);
-  ddo.query('select * from user').then((DDOStatement stmt){
-  DDOResults results = (stmt.fetchAll(DDO.FETCH_ASSOC) as DDOResults);
-    for(DDOResult row in results.results) {
-    	for(String cName in row.row.keys) {
-    		print("Column '${cName}' has value '${row.row[cName]}'");
-    	}
-    }
-  });
+main() async {
+	Driver driver = new DDOMySQL('127.0.0.1', 'example', 'root', 'password');
+	DDO ddo = new DDO(driver);
+	await ddo.exec('DROP TABLE IF EXISTS person');
+	await ddo.exec('''
+		CREATE TABLE IF NOT EXISTS `person` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+		`name` VARCHAR(200) NOT NULL,
+	`created` DATE NOT NULL,
+	PRIMARY KEY (`id`));
+	''');
+	var now = new DateTime.now().toIso8601String();
+	for(var x = 1; x <= 10; x++) {
+		await ddo.exec("INSERT INTO person (`name`, `created`) VALUES ('person-${x}', '${now}')");
+	}
+
+	DDOStatement stmt = await ddo.query('select * from person');
+	var results = stmt.fetchAll(DDO.FETCH_ASSOC);
+	for(Map<String, dynamic> row in results) {
+		for (String cName in row.keys) {
+			print("Column '${cName}' has value '${row[cName]}'");
+		}
+	}
 }
 ````
 

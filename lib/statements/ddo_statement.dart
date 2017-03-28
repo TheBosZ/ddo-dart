@@ -20,11 +20,10 @@ class DDOStatement {
 
 	DDOStatement(this._query, Driver this._connection, this._containerDdo);
 
-	Future<DDOResults> _uQuery(String query) {
-		return _connection.query(query).then((DDOResults results) {
-			_result = results;
-			return results;
-		});
+	Future<DDOResults> _uQuery(String query) async {
+		DDOResults results = await _connection.query(query);
+		_result = results;
+		return results;
 	}
 
 	int columnCount() {
@@ -144,11 +143,10 @@ class DDOStatement {
 	int lastInsertId() => _result.insertId;
 
 	//Implemented methods
-	Future<bool> query() {
-		return _uQuery(_query).then((result) {
-			_result = result;
-			return result != null;
-		});
+	Future<bool> query() async {
+		DDOResults result = await _uQuery(_query);
+		_result = result;
+		return result != null;
 	}
 
 	void rewind() {
@@ -192,7 +190,7 @@ class DDOStatement {
 		return false;
 	}
 
-	Future<bool> execute([List arr = null]) {
+	Future<bool> execute([List arr = null]) async {
 		if (_boundParams != null && _boundParams.length > 0) {
 			arr = _boundParams;
 		}
@@ -215,10 +213,9 @@ class DDOStatement {
 		}
 		_namedParams = new Map();
 		_boundParams = new List();
-		return _uQuery(query).then((result) {
-			_result = result;
-			return result != null;
-		});
+		DDOResults result = await _uQuery(query);
+		_result = result;
+		return result != null;
 	}
 
 	Object prepareInput(Object value) {
