@@ -1,3 +1,7 @@
+**This Repo has moved: https://bitbucket.org/TheBosZ/ddo-dart**
+
+This version will be archived for a while. I will eventually delete it (but not before updating the package on Pub).
+
 # Dart Data Objects
 
 A port of [PHP Data Objects to Dart](http://php.net/pdo).
